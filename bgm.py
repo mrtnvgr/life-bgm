@@ -6,6 +6,12 @@ def clear():
     else:
         os.system("clear")
 
+def wait():
+    if os.name=="nt":
+        os.system("pause")
+    else:
+        os.system('read -n1 -r -p "Press any key to continue..."')
+
 args = sys.argv
 
 while True:
@@ -17,7 +23,12 @@ while True:
             if args[2]!="":
                 filename = filename + "_" + args[2]
     p = pyaudio.PyAudio()
-    wf = wave.open(filename + ".wav", 'rb')
+    try:
+        wf = wave.open(filename + ".wav", 'rb')
+    except FileNotFoundError:
+        print("File " + filename + ".wav doesn't exist. Use 24-hour format named audio files.")
+        wait()
+        sys.exit(0)
     stream = p.open(
         format=p.get_format_from_width(wf.getsampwidth()),
         channels = wf.getnchannels(),
@@ -25,7 +36,7 @@ while True:
         output=True)
     while datetime.datetime.now().hour==hour:
         clear()
-        print(" Life-BGM v0.0.1-1")
+        print(" Life-BGM v0.0.1-2")
         print(" ")
         minutes = datetime.datetime.now().minute
         if len(str(minutes))==1:
