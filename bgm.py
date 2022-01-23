@@ -16,22 +16,22 @@ while True:
         if args[1]=="-m":
             if args[2]!="":
                 filename = filename + "_" + args[2]
-    wf = wave.open(filename + ".wav", 'rb')
-    clear()
-    print(" Life-BGM v0.0.1")
-    print(" ")
-    print("Current time: " + str(hour))
-    print("Current file: " + filename + ".wav")
     p = pyaudio.PyAudio()
+    wf = wave.open(filename + ".wav", 'rb')
     stream = p.open(
         format=p.get_format_from_width(wf.getsampwidth()),
         channels = wf.getnchannels(),
         rate = wf.getframerate(),
         output=True)
-    try:
-        data = wf.readframes(1024)
-        while data!='' and datetime.datetime.now().hour==hour:
-            stream.write(data)
-            data = wf.readframes(1024)
-    except KeyboardInterrupt:
-        break
+    while datetime.datetime.now().hour==hour:
+        clear()
+        print(" Life-BGM v0.0.1-1")
+        print(" ")
+        minutes = datetime.datetime.now().minute
+        if len(str(minutes))==1:
+            minutes *= 10
+        print("Current time: " + str(hour) + ":" + str(minutes))
+        print("Current file: " + filename + ".wav")
+        wf = wave.open(filename + ".wav", 'rb')
+        stream.write(wf.readframes(wf.getnframes()))
+stream.close()
